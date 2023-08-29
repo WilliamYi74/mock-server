@@ -1,5 +1,6 @@
 import KoaRouter from 'koa-router'
 import Mock from 'mockjs'
+import R from '../model/response'
 const router = new KoaRouter({
   prefix: '/repository',
 })
@@ -15,7 +16,7 @@ interface Repository {
   phoneNumber: number;
   detailAddress: string;
 }
-const generateData = () => {
+const usePageData = () => {
   const records: Repository[] = []
   for (let i = 0; i < 1000; i++) {
     records.push({
@@ -36,20 +37,16 @@ const generateData = () => {
     total: records.length
   })
 }
-const getPageData = generateData()
+const getPageData = usePageData()
 router.get('/list', (ctx) => {
   const { current, size } = ctx.query
   const { records, total } = getPageData(Number(current), Number(size))
-  const responseData = Mock.mock({
-    'code': 200,
-    'success': true,
-    'results': {
-      records,
-      total,
-      size,
-      current,
-    }
+  const results = Mock.mock({
+    records,
+    total,
+    size,
+    current,
   })
-  ctx.body = responseData
+  ctx.body = new R(200, results, true)
 })
 export default router
