@@ -39,7 +39,7 @@ const usePageData = () => {
 }
 const getPageData = usePageData()
 router.get('/list', (ctx) => {
-  const { current, size } = ctx.query
+  const { current, size } = ctx.request.query
   const { records, total } = getPageData(Number(current), Number(size))
   const results = Mock.mock({
     records,
